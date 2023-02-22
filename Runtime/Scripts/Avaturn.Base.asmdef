@@ -1,0 +1,17 @@
+{
+    "name": "Avaturn.Base",
+    "rootNamespace": "",
+    "references": [
+        "UniWebView-CSharp",
+        "glTFast"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
