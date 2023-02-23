@@ -6,27 +6,22 @@ using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEditor.PackageManager;
 using UnityEditor.PackageManager.Requests;
+using UnityEngine;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
-namespace ReadyPlayerMe.Core.Editor
+namespace Avaturn.Base.Editor
 {
     /// <summary>
     ///     Class <c>ModuleInstaller</c> is responsible for checking and installing all modules (Unity packages) required for
-    ///     the Ready Player Me Unity SDK from their Git URL's.
+    ///     the Avaturn Unity SDK from their Git URL's.
     /// </summary>
     [InitializeOnLoad]
     public static class ModuleInstaller
     {
-        private const string TAG = nameof(ModuleInstaller);
-
         private const int THREAD_SLEEP_TIME = 100;
-        private const string PROGRESS_BAR_TITLE = "Ready Player Me";
-        private const string RPM_SCRIPTING_SYMBOL = "READY_PLAYER_ME";
-        private const string CORE_MODULE_NAME = "com.readyplayerme.core";
-        
-        private const string MODULE_INSTALLATION_SUCCESS_MESSAGE =
-            "All the modules are installed successfully. Ready Player Me avatar system is ready to use.";
-        private const string MODULE_INSTALLATION_FAILURE_MESSAGE = "Something went wrong while installing modules.";
+        private const string PROGRESS_BAR_TITLE = "Avaturn";
+        private const string RPM_SCRIPTING_SYMBOL = "AVATURN";
+        private const string CORE_MODULE_NAME = "com.avaturn.base";
 
         static ModuleInstaller()
         {
@@ -46,7 +41,6 @@ namespace ReadyPlayerMe.Core.Editor
             {
                 InstallModules();
                 AppendScriptingSymbol();
-                EditorAssetGenerator.CreateSettingsAssets();
             }
             ValidateModules();
         }
@@ -108,7 +102,6 @@ namespace ReadyPlayerMe.Core.Editor
             {
                 AssetDatabase.Refresh();
                 CompilationPipeline.RequestScriptCompilation();
-                SDKLogger.Log(TAG, "Error: " + addRequest.Error.message);
             }
         }
 
@@ -146,7 +139,6 @@ namespace ReadyPlayerMe.Core.Editor
 
             if (listRequest.Error != null)
             {
-                SDKLogger.Log(TAG, "Error: " + listRequest.Error.message);
                 return Array.Empty<PackageInfo>();
             }
 
@@ -182,13 +174,12 @@ namespace ReadyPlayerMe.Core.Editor
 
             if (allModuleInstalled)
             {
-                SDKLogger.Log(TAG, MODULE_INSTALLATION_SUCCESS_MESSAGE);
                 AssetDatabase.Refresh();
                 CompilationPipeline.RequestScriptCompilation();
             }
             else
             {
-                SDKLogger.LogWarning(TAG, MODULE_INSTALLATION_FAILURE_MESSAGE);
+                Debug.LogError("FAILED MODULES INSTALL");
             }
         }
     }

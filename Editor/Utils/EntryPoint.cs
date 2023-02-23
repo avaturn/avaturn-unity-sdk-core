@@ -1,7 +1,7 @@
 using System;
 using UnityEditor;
 
-namespace ReadyPlayerMe.Core.Editor
+namespace Avaturn.Base.Editor
 {
     /// <summary>
     ///     This class serves as a way of tracking when the Unity project (editor) is initially opened so that functions can be run at this point.

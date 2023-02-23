@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEditor.PackageManager;
 
-namespace ReadyPlayerMe.Core.Editor
+namespace Avaturn.Base.Editor
 {
     /// <summary>
     ///     Class <c>ModuleList</c> is a static class that can be referenced to get the latest module version.

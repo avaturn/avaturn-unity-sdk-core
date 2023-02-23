@@ -9,10 +9,10 @@ using UnityEngine;
 using UnityEngine.Networking;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
-namespace ReadyPlayerMe.Core.Editor
+namespace Avaturn.Base.Editor
 {
     /// <summary>
-    /// It is responsible for checking and updating the Ready Player Me SDK modules.
+    /// It is responsible for checking and updating the Avaturn SDK modules.
     /// </summary>
     [InitializeOnLoad]
     public class ModuleUpdater
@@ -24,7 +24,7 @@ namespace ReadyPlayerMe.Core.Editor
         }
 
         private const string PACKAGE_JSON = "package.json";
-        private const string PACKAGE_DOMAIN = "com.readyplayerme";
+        private const string PACKAGE_DOMAIN = "com.avaturn";
 
         private const string GITHUB_WEBSITE = "https://github.com";
         private const string GITHUB_API_URL = "https://api.github.com/repos";
@@ -40,9 +40,9 @@ namespace ReadyPlayerMe.Core.Editor
         }
 
         /// <summary>
-        /// Check for Ready Player Me package updates.
+        /// Check for Avaturn package updates.
         /// </summary>
-        [MenuItem("Ready Player Me/Check For Updates")]
+        [MenuItem("Avaturn/Check For Updates")]
         public static void CheckForUpdates()
         {
             Check();

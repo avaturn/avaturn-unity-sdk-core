@@ -1,9 +1,9 @@
 using System;
 
-namespace ReadyPlayerMe.Core.Editor
+namespace Avaturn.Base.Editor
 {
     /// <summary>
-    ///     Structure <c>ModuleInfo</c> describes a Ready Player Me Module or Unity package.
+    ///     Structure <c>ModuleInfo</c> describes a Avaturn Module or Unity package.
     /// </summary>
     [Serializable]
     public struct ModuleInfo
