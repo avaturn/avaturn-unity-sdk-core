@@ -1,10 +1,10 @@
 {
   "name": "com.avaturn.base",
-  "displayName": "Avaturn",
+  "displayName": "AvaturnBase",
   "version": "0.0.0",
   "dependencies": {
-    "com.unity.nuget.newtonsoft-json": "3.0.2"
+    "com.atteneder.gltfast": "5.0.0"
   },
   "author": "Kirill Stepushkin",
-  "description": "Avaturn Base package. Required UniWebView and WebGLTemplates packages."
+  "description": "Avaturn Base package."
 }
