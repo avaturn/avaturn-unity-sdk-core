@@ -1,7 +1,7 @@
 {
   "name": "com.avaturn.base",
   "displayName": "AvaturnBase",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "dependencies": {
     "com.atteneder.gltfast": "5.0.0"
   },

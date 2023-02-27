@@ -25,7 +25,8 @@ public class MenuMobile : MonoBehaviour
     {
         _isOpen = isOpen;
         _hideButton.SetActive(_isOpen);
-        _controllCanvas.SetActive(!_isOpen);
+        if(_controllCanvas != null)
+            _controllCanvas.SetActive(!_isOpen);
         _iframe.ShowView(_isOpen);
     }
 }
