@@ -1,10 +1,10 @@
 {
-  "name": "com.avaturn.base",
-  "displayName": "AvaturnBase",
-  "version": "0.0.2",
+  "name": "com.avaturn.core",
+  "displayName": "AvaturnCore",
+  "version": "0.1.0",
   "dependencies": {
     "com.atteneder.gltfast": "5.0.0"
   },
-  "author": "Kirill Stepushkin",
-  "description": "Avaturn Base package."
+  "author": "Avaturn",
+  "description": "Avaturn Core package."
 }

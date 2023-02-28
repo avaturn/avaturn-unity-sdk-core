@@ -1,5 +1,5 @@
 {
-    "name": "Avaturn.Base",
+    "name": "Avaturn.Core",
     "rootNamespace": "",
     "references": [
         "UniWebView-CSharp",
