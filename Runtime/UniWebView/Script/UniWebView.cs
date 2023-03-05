@@ -216,6 +216,11 @@ public class UniWebView: MonoBehaviour {
 
     private string id = Guid.NewGuid().ToString();
     private UniWebViewNativeListener listener;
+    
+    /// <summary>
+    /// Represents the embedded toolbar in the current web view.
+    /// </summary>
+    public UniWebViewEmbeddedToolbar EmbeddedToolbar { get; private set; }
 
     private bool isPortrait;
     [SerializeField]
@@ -228,11 +233,19 @@ public class UniWebView: MonoBehaviour {
     [SerializeField]
     private bool fullScreen;
 
+    [Obsolete("Use Toolbar is deprecated. Use the embedded toolbar instead.", false)]
     [SerializeField]
     private bool useToolbar;
-        
+
+    [Obsolete("Use Toolbar is deprecated. Use the embedded toolbar instead.", false)]
     [SerializeField]
     private UniWebViewToolbarPosition toolbarPosition;
+
+    [SerializeField]
+    private bool useEmbeddedToolbar;
+    
+    [SerializeField]
+    private UniWebViewToolbarPosition embeddedToolbarPosition;
 
     #pragma warning restore 0649
 
@@ -354,6 +367,8 @@ public class UniWebView: MonoBehaviour {
         listener.webView = this;
         UniWebViewNativeListener.AddListener(listener);
 
+        EmbeddedToolbar = new UniWebViewEmbeddedToolbar(listener);
+
         Rect rect;
         if (fullScreen) {
             rect = new Rect(0, 0, Screen.width, Screen.height);
@@ -369,6 +384,12 @@ public class UniWebView: MonoBehaviour {
         if (showOnStart) {
             Show();
         }
+        
+        if (useEmbeddedToolbar) {
+            EmbeddedToolbar.SetPosition(embeddedToolbarPosition);
+            EmbeddedToolbar.Show();            
+        }
+
         if (!string.IsNullOrEmpty(urlOnStart)) {
             Load(urlOnStart);
         }
@@ -572,10 +593,13 @@ public class UniWebView: MonoBehaviour {
                 completionHandler();
             }
         }
+        
+#pragma warning disable 618
         if (showStarted && useToolbar) {
             var top = (toolbarPosition == UniWebViewToolbarPosition.Top);
             SetShowToolbar(true, false, top, fullScreen);
         }
+#pragma warning restore 618
         return showStarted;
     }
 
@@ -613,10 +637,12 @@ public class UniWebView: MonoBehaviour {
                 completionHandler();
             }
         }
+#pragma warning disable 618
         if (hideStarted && useToolbar) {
             var top = (toolbarPosition == UniWebViewToolbarPosition.Top);
             SetShowToolbar(false, false, top, fullScreen);
         }
+#pragma warning restore 618
         return hideStarted;
     }
 
@@ -906,6 +932,24 @@ public class UniWebView: MonoBehaviour {
     }
 
     /// <summary>
+    /// Sets whether the web view limits navigation to pages within the app’s domain.
+    ///
+    /// This only works on iOS 14.0+. For more information, refer to the Apple's documentation:
+    /// https://developer.apple.com/documentation/webkit/wkwebviewconfiguration/3585117-limitsnavigationstoappbounddomai
+    /// and the App-Bound Domains page: https://webkit.org/blog/10882/app-bound-domains/
+    ///
+    /// This requires additional setup in `WKAppBoundDomains` key in the Info.plist file.
+    ///
+    /// On Android, this method does nothing.
+    /// </summary>
+    /// <param name="enabled"></param>
+    public static void SetLimitsNavigationsToAppBoundDomains(bool enabled) {
+        #if (UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IOS) && !UNITY_EDITOR_WIN && !UNITY_EDITOR_LINUX
+        UniWebViewInterface.SetLimitsNavigationsToAppBoundDomains(enabled);
+        #endif
+    }
+
+    /// <summary>
     /// Sets whether JavaScript can open windows without user interaction.
     /// 
     /// By setting this to `true`, an automatically JavaScript navigation will be allowed in the web view.
@@ -1051,6 +1095,39 @@ public class UniWebView: MonoBehaviour {
     /// <param name="text">The text to display while loading indicator visible. Default is "Loading..."</param>
     public void SetSpinnerText(string text) {
         UniWebViewInterface.SetSpinnerText(listener.Name, text);
+    }
+
+    /// <summary>
+    /// Sets whether the user can dismiss the loading indicator by tapping on it or the greyed-out background around.
+    ///
+    /// By default, when the loading spinner is shown, the user can dismiss it by a single tapping. Call this method
+    /// with `false` to disable this behavior.
+    /// </summary>
+    /// <param name="flag">Whether the user can dismiss the loading indicator.</param>
+    public void SetAllowUserDismissSpinner(bool flag) {
+        UniWebViewInterface.SetAllowUserDismissSpinnerByGesture(listener.Name, flag);
+    }
+
+    /// <summary>
+    /// Shows the loading spinner.
+    ///
+    /// Calling this method will show the loading spinner, regardless if the `SetShowSpinnerWhileLoading` is set to
+    /// `true` or `false`. However, if `SetShowSpinnerWhileLoading` was called with `true`, UniWebView will still hide
+    /// the spinner when the loading finishes.
+    /// </summary>
+    public void ShowSpinner() {
+        UniWebViewInterface.ShowSpinner(listener.Name);
+    }
+
+    /// <summary>
+    /// Hides the loading spinner.
+    ///
+    /// Calling this method will hide the loading spinner, regardless if the `SetShowSpinnerWhileLoading` is set to
+    /// `true` or `false`. However, if `SetShowSpinnerWhileLoading` was called with `false`, UniWebView will still show
+    /// the spinner when the loading starts.
+    /// </summary>
+    public void HideSpinner() {
+        UniWebViewInterface.HideSpinner(listener.Name);
     }
 
     /// <summary>
@@ -1773,7 +1850,6 @@ public class UniWebView: MonoBehaviour {
         }
     }
 
-    [Obsolete("SetImmersiveModeEnabled is deprecated. Now UniWebView always respect navigation bar/status bar settings from Unity.", false)]
     /// <summary>
     /// Sets whether the web view should behave in immersive mode, that is, 
     /// hides the status bar and navigation bar with a sticky style.
@@ -1781,22 +1857,21 @@ public class UniWebView: MonoBehaviour {
     /// This method is only for Android. Default is enabled.
     /// </summary>
     /// <param name="enabled"></param>
+    [Obsolete("SetImmersiveModeEnabled is deprecated. Now UniWebView always respect navigation bar/status bar settings from Unity.", false)]
     public void SetImmersiveModeEnabled(bool enabled) {
         Debug.LogError(
             "SetImmersiveModeEnabled is removed in UniWebView 4." + 
             "Now UniWebView always respect navigation bar/status bar settings from Unity."
         );
     } 
-
-    [Obsolete("KeyCodeReceivedDelegate is deprecated. Now UniWebView never intercepts device key code events. Check `Input.GetKeyUp` instead.", false)]
     /// <summary>
     /// Delegate for code keycode received event.
     /// </summary>
     /// <param name="webView">The web view component which raises this event.</param>
     /// <param name="keyCode">The key code of pressed key. See [Android API for keycode](https://developer.android.com/reference/android/view/KeyEvent.html#KEYCODE_0) to know the possible values.</param>
+    [Obsolete("KeyCodeReceivedDelegate is deprecated. Now UniWebView never intercepts device key code events. Check `Input.GetKeyUp` instead.", false)]
     public delegate void KeyCodeReceivedDelegate(UniWebView webView, int keyCode);
 
-    [Obsolete("OnKeyCodeReceived is deprecated and never called. Now UniWebView never intercepts device key code events. Check `Input.GetKeyUp` instead.", false)]
     /// <summary>
     /// Raised when a key (like back button or volume up) on the device is pressed.
     /// 
@@ -1804,7 +1879,8 @@ public class UniWebView: MonoBehaviour {
     /// get the back button event. On iOS, user's key action is not avaliable and this event will never be 
     /// raised.
     /// </summary>
-    #pragma warning disable CS0067
+    [Obsolete("OnKeyCodeReceived is deprecated and never called. Now UniWebView never intercepts device key code events. Check `Input.GetKeyUp` instead.", false)]
+#pragma warning disable CS0067
     public event KeyCodeReceivedDelegate OnKeyCodeReceived;
 
 }

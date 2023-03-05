@@ -20,11 +20,26 @@ class UniWebViewEditorSettings: ScriptableObject
     [SerializeField]
     internal bool addsKotlin = true;
 
+    [SerializeField] 
+    internal string kotlinVersion = null;
+
     [SerializeField]
     internal bool addsAndroidBrowser = true;
 
     [SerializeField]
+    internal string androidBrowserVersion = null;
+    
+    [SerializeField]
     internal bool enableJetifier = true;
+
+    [SerializeField]
+    internal string[] authCallbackUrls = { };
+    
+    [SerializeField]
+    internal bool supportLINELogin = false;
+
+    internal static string defaultKotlinVersion = "1.6.21";
+    internal static string defaultAndroidBrowserVersion = "1.2.0";
 
     internal static UniWebViewEditorSettings GetOrCreateSettings() {
         var settings = AssetDatabase.LoadAssetAtPath<UniWebViewEditorSettings>(assetPath);
@@ -64,12 +79,15 @@ static class UniWebViewSettingsProvider {
     #endif
     static void DrawPref() {
         EditorGUIUtility.labelWidth = 320;
+        EditorGUIUtility.fieldWidth = 20;
         if (settings == null) {
             settings = UniWebViewEditorSettings.GetSerializedSettings();
         }
         settings.Update();
         EditorGUI.BeginChangeCheck();
 
+        // Manifest
+        EditorGUILayout.Space();
         EditorGUILayout.BeginVertical();
         EditorGUILayout.LabelField("Android Manifest", EditorStyles.boldLabel);
 
@@ -85,19 +103,66 @@ static class UniWebViewSettingsProvider {
         EditorGUI.indentLevel--;
         EditorGUILayout.EndVertical();
 
+        // Gradle
+        EditorGUILayout.Space();
         EditorGUILayout.BeginVertical();
         EditorGUILayout.LabelField("Gradle Build", EditorStyles.boldLabel);
-
         EditorGUI.indentLevel++;
-
         EditorGUILayout.PropertyField(settings.FindProperty("addsKotlin"));
         DrawDetailLabel("Turn off this if another library is already adding Kotlin runtime.");
+        var addingKotlin = settings.FindProperty("addsKotlin").boolValue;
+        if (addingKotlin) {
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(settings.FindProperty("kotlinVersion"), GUILayout.Width(400));
+            DrawDetailLabel("If not specified, use the default version: " + UniWebViewEditorSettings.defaultKotlinVersion);
+            EditorGUI.indentLevel--;            
+        }
+
         EditorGUILayout.PropertyField(settings.FindProperty("addsAndroidBrowser"));
         DrawDetailLabel("Turn off this if another library is already adding 'androidx.browser:browser'.");
+        var addingBrowser = settings.FindProperty("addsAndroidBrowser").boolValue;
+        if (addingBrowser) {
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(settings.FindProperty("androidBrowserVersion"), GUILayout.Width(400));
+            DrawDetailLabel("If not specified, use the default version: " + UniWebViewEditorSettings.defaultAndroidBrowserVersion);
+            EditorGUI.indentLevel--;            
+        }
+        
+        
         EditorGUILayout.PropertyField(settings.FindProperty("enableJetifier"));
         DrawDetailLabel("Turn off this if you do not need Jetifier (for converting other legacy support dependencies to Android X).");
-
+        EditorGUI.indentLevel--;
         EditorGUILayout.EndVertical();
+
+        // Auth callbacks
+        EditorGUILayout.Space();
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.LabelField("Auth Callbacks", EditorStyles.boldLabel);
+        EditorGUI.indentLevel++;
+        EditorGUILayout.PropertyField(settings.FindProperty("authCallbackUrls"), true);
+        DrawDetailLabel("Adds all available auth callback URLs here to use UniWebView's auth support.");
+        
+        EditorGUILayout.Space();
+        EditorGUILayout.PropertyField(settings.FindProperty("supportLINELogin"));
+        DrawDetailLabel("LINE Login is using a custom fixed scheme. If you want to support LINE Login, turn on this.");
+        
+        EditorGUI.indentLevel--;
+        EditorGUILayout.EndVertical();
+
+        EditorGUILayout.Space();
+        EditorGUILayout.BeginHorizontal();
+        EditorGUI.indentLevel++;
+        EditorGUILayout.HelpBox("Read the help page to know more about all UniWebView preferences detail.", MessageType.Info);
+        
+        var style = new GUIStyle(GUI.skin.label);
+        style.normal.textColor = Color.blue;
+        if (GUILayout.Button("Help Page", style)) {
+          Application.OpenURL("https://docs.uniwebview.com/guide/installation.html#optional-steps");
+        }
+        
+        EditorGUILayout.Space();
+        EditorGUI.indentLevel--;
+        EditorGUILayout.EndHorizontal();
         
         if (EditorGUI.EndChangeCheck()) {
             settings.ApplyModifiedProperties();

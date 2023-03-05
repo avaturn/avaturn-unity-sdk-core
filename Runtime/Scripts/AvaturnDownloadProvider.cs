@@ -65,8 +65,6 @@ namespace GLTFast.Loading
     /// </summary>
     public class AvaturnAwaitableDownload : IDownload
     {
-        const string k_MimeTypeGltfBinary = "model/gltf-binary";
-        private const string k_AvaturnTypeGltfBinary = "application/octet-stream";
         const string k_MimeTypeGltf = "model/gltf+json";
 
         /// <summary>
@@ -147,10 +145,9 @@ namespace GLTFast.Loading
                 if (Success)
                 {
                     string contentType = m_Request.GetResponseHeader("Content-Type");
-                    if (contentType == k_MimeTypeGltfBinary || contentType == k_AvaturnTypeGltfBinary)
-                        return true;
                     if (contentType == k_MimeTypeGltf)
                         return false;
+                    return true;
                 }
                 return null;
             }

@@ -254,6 +254,21 @@ public class UniWebViewInterface {
         plugin.CallStatic("setSpinnerText", name, text);
     }
 
+    public static void SetAllowUserDismissSpinnerByGesture(string name, bool flag) {
+        CheckPlatform();
+        plugin.CallStatic("setAllowUserDismissSpinnerByGesture", name, flag);
+    }
+
+    public static void ShowSpinner(string name) {
+        CheckPlatform();
+        plugin.CallStatic("showSpinner", name);
+    }
+
+    public static void HideSpinner(string name) {
+        CheckPlatform();
+        plugin.CallStatic("hideSpinner", name);
+    }
+
     public static bool CanGoBack(string name) {
         CheckPlatform();
         return plugin.CallStatic<bool>("canGoBack", name);
@@ -383,6 +398,8 @@ public class UniWebViewInterface {
         plugin.CallStatic("setDownloadEventForContextMenuEnabled", name, enabled);
     }
 
+    // Safe Browsing
+
     public static bool IsSafeBrowsingSupported() {
         CheckPlatform();
         return plugin.CallStatic<bool>("isSafeBrowsingSupported");
@@ -402,6 +419,80 @@ public class UniWebViewInterface {
         CheckPlatform();
         plugin.CallStatic("safeBrowsingShow", name);
     }
+
+    // Authentication
+
+    public static bool IsAuthenticationIsSupported() {
+        CheckPlatform();
+        return plugin.CallStatic<bool>("isAuthenticationIsSupported");
+    }
+
+    public static void AuthenticationInit(string name, string url, string scheme) {
+        CheckPlatform();
+        plugin.CallStatic("authenticationInit", name, url, scheme);
+    }
+
+    public static void AuthenticationStart(string name) {
+        CheckPlatform();
+        plugin.CallStatic("authenticationStart", name);
+    }
+
+    public static void AuthenticationSetPrivateMode(string name, bool enabled) {
+        CheckPlatform();
+        plugin.CallStatic("authenticationSetPrivateMode", name, enabled);
+    }
+
+    public static void SetShowEmbeddedToolbar(string name, bool show) {
+        CheckPlatform();
+        plugin.CallStatic("setShowEmbeddedToolbar", name, show);
+    }
+
+    public static void SetEmbeddedToolbarOnTop(string name, bool top) {
+        CheckPlatform();
+        plugin.CallStatic("setEmbeddedToolbarOnTop", name, top);
+    }
+
+    public static void SetEmbeddedToolbarDoneButtonText(string name, string text) {
+        CheckPlatform();
+        plugin.CallStatic("setEmbeddedToolbarDoneButtonText", name, text);
+    }
+
+    public static void SetEmbeddedToolbarGoBackButtonText(string name, string text) {
+        CheckPlatform();
+        plugin.CallStatic("setEmbeddedToolbarGoBackButtonText", name, text);
+    }
+
+    public static void SetEmbeddedToolbarGoForwardButtonText(string name, string text) {
+        CheckPlatform();
+        plugin.CallStatic("setEmbeddedToolbarGoForwardButtonText", name, text);
+    }
+    
+    public static void SetEmbeddedToolbarTitleText(string name, string text) {
+        CheckPlatform();
+        plugin.CallStatic("setEmbeddedToolbarTitleText", name, text);
+    }
+
+    public static void SetEmbeddedToolbarBackgroundColor(string name, Color color) {
+        CheckPlatform();
+        plugin.CallStatic("setEmbeddedToolbarBackgroundColor", name, color.r, color.g, color.b, color.a);
+    }
+    
+    public static void SetEmbeddedToolbarButtonTextColor(string name, Color color) {
+        CheckPlatform();
+        plugin.CallStatic("setEmbeddedToolbarButtonTextColor", name, color.r, color.g, color.b, color.a);
+    }
+
+    public static void SetEmbeddedToolbarTitleTextColor(string name, Color color) {
+        CheckPlatform();
+        plugin.CallStatic("setEmbeddedToolbarTitleTextColor", name, color.r, color.g, color.b, color.a);
+    }
+
+    public static void SetEmeddedToolbarNavigationButtonsShow(string name, bool show) {
+        CheckPlatform();
+        plugin.CallStatic("setEmbeddedToolbarNavigationButtonsShow", name, show);
+    }
+
+    // Platform
 
     public static void CheckPlatform() {
         if (!correctPlatform) {

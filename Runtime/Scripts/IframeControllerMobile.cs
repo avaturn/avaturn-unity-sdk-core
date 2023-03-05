@@ -34,6 +34,7 @@ public class IframeControllerMobile : MonoBehaviour
         webView.ReferenceRectTransform = webViewFrame;
 
         _avatarReceiver.SetWebView(webView);
+        webView.SetAcceptThirdPartyCookies(true);
         webView.SetShowToolbar(true);
         webView.AddPermissionTrustDomain("scan.in3d.io");
         webView.AddPermissionTrustDomain(domain);

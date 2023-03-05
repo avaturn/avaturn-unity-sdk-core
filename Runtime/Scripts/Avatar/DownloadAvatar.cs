@@ -31,7 +31,7 @@ public class DownloadAvatar : MonoBehaviour
             Debug.LogError("Fail to download: url is empty");
             return;
         }
-        Debug.Log("Start download...");
+        Debug.Log($"Start download...\nUrl = {url}");
         
         // Loading via GltFast loader
         var asset = GetComponent<GltfAsset>();

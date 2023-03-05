@@ -1,6 +1,95 @@
 # Release Note
 
-### 4.13.0
+### 5.3.1 (18 Feb, 2023)
+
+#### Fix
+
+* An issue that `SetOpenLinksInExternalBrowser` setting is ignored for links with "target=_blank" attribute. Now the external browser will be used for such links instead of opening the page in place. If `SetOpenLinksInExternalBrowser` and `SetSupportMultipleWindows` is set to `true` at the same time, the external browser will be used.
+* Now the activity for OAuth 2.0 flow on Android allows orientation changes. It won't throw an exception anymore when the device is rotated during the flow.
+
+### 5.3.0 (28 Jan, 2023)
+
+#### Add
+
+* Support for customization of Kotlin and Android Browser package versions. This can help to resolve the conflict with other plugins which use another version of these packages.
+
+#### Fix
+
+* Improve the visual effect of the Embedded Toolbar on iOS. Now it has a larger and bold font for the title.
+* A better way to find the root view controller for adding UniWebView to on iOS. Now you can implement a `rootViewControllerForUniWebView` method in your app delegate and return the view controller you want UniWebView to be added to. By default, if the app delegate does not implement either `rootViewControllerForUniWebView` or `rootViewController`, UniWebView now also tries to find the top-most view controller instead of the window's direct root view controller.
+
+### 5.2.1 (4 Jan, 2023)
+
+#### Fix
+
+* A crash when an SSL error is encountered during loading a scheme other than "http" or "https" (for example, "wss://" links) on Android.
+
+### 5.2.0 (23 Dec, 2022)
+
+#### Add
+
+* Most of the OAuth flows now support refresh token. Use `StartRefreshTokenFlow` on the flow to start token refresh. For more about OAuth 2.0 support in UniWebView, check [this guide](https://docs.uniwebview.com/guide/oauth2.html#refresh-token).
+
+#### Fix
+
+* A workaround for Facebook login on Android. Facebook is preventing a web view to perform OAuth login on Android, now the `UniWebViewAuthenticationFlowFacebook` will use a desktop browser user-agent to open the login page.
+* A crash that caused by orientation change when the camera is presented on Android while the game is landscape but the camera is portrait.
+* A crash when taking screenshot when the web view has a zero or negative size. Now under this case, the `CaptureSnapshot` method will give an error `-1002` in its `OnCaptureSnapshotFinished` event.
+
+### 5.1.0 (21 Nov, 2022)
+
+#### Add
+
+* New methods to control the behavior of the loading spinner. Use `SetAllowUserDismissSpinner` to allow or forbid users dismissing the loading indicator; Use `ShowSpinner` and `HideSpinner` to control its visibility programmatically.
+* A new API `SetLimitsNavigationsToAppBoundDomains`, it is a wrapper of `limitsNavigationsToAppBoundDomains` for iOS. It limits user's navigation to only pre-defined domains on iOS.
+
+#### Fix
+
+* Improve the delay that on Android the received cookies are not flushed fast enough in some cases. Now a forcibly cookie flush is always performed when closing the web view.
+* The Unity InputSystem assembly reference is added explicitly to prevent compiling error on Unity's versions without InputSystem support.
+* An issue prevents the package built on macOS 13 SDK.
+
+### 5.0.2 (24 Oct, 2022)
+
+#### Fix
+
+* A potential issue that the post-build Gradle file parses wrongly when using variables.
+* The loading spinner is now not shown wrongly when a mail link tapped.
+
+### 5.0.1 (8 Oct, 2022)
+
+#### Fix
+
+* An issue that the exported iOS project cannot be built with Xcode 13.
+* A problem which stops the project from compiling when ".Net Framework" profile is used in Unity.
+
+### 5.0.0 (18 Sep, 2022)
+
+::: danger
+5.0.0 is a major update of UniWebView. Although most of APIs in UniWebView 5 are compatible with UniWebView 4 and it should be easy enough to migrate, there are still a few breaking changes. If you are using the toolbar in UniWebView 4, although it is still available, but it is deprecated and replaced by the new embedded toolbar. For migration from UniWebView 4 in detail, visit the [Migration Guide](https://docs.uniwebview.com/guide/migration-guide-v4-to-v5.html). To know the highlight of the version, check [this page](https://docs.uniwebview.com/guide/version-highlight.html) for more.
+:::
+
+#### Add
+
+* **Built-in OAuth 2.0 support** for Google, Twitter, Facebook, LINE and GitHub. Now your user can login with their account easily and get access token for other API calls on those service. For more about OAuth 2.0 support in UniWebView, check [this guide](https://docs.uniwebview.com/guide/oauth2.html).
+* **Customized OAuth 2.0 support** for any other service provider which defines a standard OAuth 2.0 Authorization Code Flow.
+* Embedded toolbar for both iOS and Android. It replaces the old toolbar on iOS. The new toolbar contains a set of navigation buttons and a title, showing as a part of the web view on top or bottom of the web view frame. For more about embedded toolbar, check [this guide](https://docs.uniwebview.com/guide/embedded-toolbar.html).
+
+#### Fix
+
+* A layout issue which occasionally happens when opening the old toolbar. Now the buttons position should be always correct.
+* An issue which causes web view's `Url` property not parsing correctly when it contains some special characters.
+
+#### Deprecate
+
+* The original iOS-only toolbar is now deprecated. Use the new embedded toolbar instead.
+* As Xcode 14 drops the support of 32-bit iOS devices, UniWebView 5 will not support 32-bit iOS devices anymore. If you are using UniWebView 4 and still need to support 32-bit iOS devices for a while, please stay with UniWebView 4.
+
+#### Known Issues
+
+* The `WKWebView` on iOS 16 Simulator is broken: the web view process won't connect and no content can be loaded due to a bug inside WebKit and Apple's system. To develop on iOS simulators, please use iOS 15 or earlier versions for now. This issue does not affect any physical devices running iOS 16.
+
+### 4.13.0 (3 Sep, 2022)
 
 #### Add
 
@@ -226,7 +315,7 @@
 ### 4.0.0 (1 Aug, 2020)
 
 ::: danger
-4.0.0 is a major update of UniWebView. Although most of APIs in UniWebView 4 are compatible with UniWebView 3 and it should be easy enough to migrate, there are still a few breaking changes. For migration from UniWebView 3 in detail, visit the [Migration Guide](https://docs.uniwebview.com/guide/migration-guide.html). To know the highlight of the version, check [this page](https://docs.uniwebview.com/guide/version-highlight.html) for more.
+4.0.0 is a major update of UniWebView. Although most of APIs in UniWebView 4 are compatible with UniWebView 3 and it should be easy enough to migrate, there are still a few breaking changes. For migration from UniWebView 3 in detail, visit the [Migration Guide](https://docs-v4.uniwebview.com/guide/migration-guide.html). To know the highlight of the version, check [this page](https://docs-v4.uniwebview.com/guide/version-highlight.html) for more.
 :::
 
 #### Add
@@ -683,7 +772,7 @@ UniWebView now requires Xcode 9 with iOS SDK 11 to build. If you are still using
 ### 3.0.0 (27 Jun, 2017)
 
 ::: danger
-3.0.0 is a major update of UniWebView. We rewrote the whole software from scratch to bring your experience of using a web view in Unity to a next level. Be caution it is not compatible with UniWebView 2, there are quite a few breaking changes in this version. For migration from UniWebView 2 in detail, visit our [Migration Guide](https://docs.uniwebview.com/guide/migration-guide.html) in documentation. To know the highlight of the version, check [this page](https://docs.uniwebview.com/guide/version-highlight.html) for more.
+3.0.0 is a major update of UniWebView. We rewrote the whole software from scratch to bring your experience of using a web view in Unity to a next level. Be caution it is not compatible with UniWebView 2, there are quite a few breaking changes in this version. For migration from UniWebView 2 in detail, visit our [Migration Guide](https://docs-v3.uniwebview.com/guide/migration-guide.html) in documentation. To know the highlight of the version, check [this page](https://docs-v3.uniwebview.com/guide/version-highlight.html) for more.
 :::
 
 #### Add

@@ -59,6 +59,9 @@ public class UniWebViewNativeListener: MonoBehaviour {
     [HideInInspector]
     public UniWebViewSafeBrowsing safeBrowsing;
 
+    [HideInInspector]
+    public UniWebViewAuthenticationSession session;
+
     /// <summary>
     /// Name of current listener. This is a UUID string by which native side could use to find 
     /// the message destination.
@@ -170,6 +173,17 @@ public class UniWebViewNativeListener: MonoBehaviour {
         
         var payload = JsonUtility.FromJson<UniWebViewNativeResultPayload>(result);
         webView.InternalOnCaptureSnapshotFinished(payload);
+    }
+
+    public void AuthFinished(string result) {
+        UniWebViewLogger.Instance.Info("Auth Session Finished. Url: " + result);
+        session.InternalAuthenticationFinished(result);
+    }
+
+    public void AuthErrorReceived(string result) {
+        UniWebViewLogger.Instance.Info("Auth Session Error Received. Result: " + result);
+        var payload = JsonUtility.FromJson<UniWebViewNativeResultPayload>(result);
+        session.InternalAuthenticationErrorReceived(payload);
     }
 }
 

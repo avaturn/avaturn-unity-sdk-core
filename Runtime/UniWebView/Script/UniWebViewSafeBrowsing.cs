@@ -83,10 +83,10 @@ public class UniWebViewSafeBrowsing: UnityEngine.Object {
     /// </queries>
     /// ``` 
     /// </summary>
-    /// <value>
+    /// <returns>
     /// Returns `true` if the safe browsing mode is supported and the page will be opened in safe browsing 
     /// mode. Otherwise, `false`.
-    /// </value>
+    /// </returns>
     public static bool IsSafeBrowsingSupported {
         get {
             #if UNITY_EDITOR

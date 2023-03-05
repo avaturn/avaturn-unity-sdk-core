@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEditor.Android;
 using UnityEngine;
@@ -34,6 +35,13 @@ class UniWebViewPostBuildProcessor : IPostGenerateGradleAndroidProject
         if (settings.accessFineLocation) {
             changed = manifest.AddAccessFineLocationPermission() || changed;
         }
+        if (settings.authCallbackUrls.Length > 0) {
+            changed = manifest.AddAuthCallbacksIntentFilter(settings.authCallbackUrls) || changed;
+        }
+
+        if (settings.supportLINELogin) {
+            changed = manifest.AddAuthCallbacksIntentFilter(new string[] { "lineauth://auth" }) || changed;
+        }
 
         if (changed) {
             manifest.Save();
@@ -44,25 +52,27 @@ class UniWebViewPostBuildProcessor : IPostGenerateGradleAndroidProject
         var gradleFilePath = GetGradleFilePath(root);
         var config = new UniWebViewGradleConfig(gradleFilePath);
 
+        var settings = UniWebViewEditorSettings.GetOrCreateSettings();
+        
         var kotlinPrefix = "implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:";
-        var kotlinVersion = "1.6.20'";
+        var kotlinVersion = String.IsNullOrWhiteSpace(settings.kotlinVersion) 
+            ? UniWebViewEditorSettings.defaultKotlinVersion : settings.kotlinVersion;
 
         var browserPrefix = "implementation 'androidx.browser:browser:";
-        var browserVersion = "1.2.0'";
-
-        var settings = UniWebViewEditorSettings.GetOrCreateSettings();
+        var browserVersion = String.IsNullOrWhiteSpace(settings.androidBrowserVersion) 
+            ? UniWebViewEditorSettings.defaultAndroidBrowserVersion : settings.androidBrowserVersion;
 
         var dependenciesNode = config.ROOT.FindChildNodeByName("dependencies");
         if (dependenciesNode != null) {
             // Add kotlin
             if (settings.addsKotlin) {
-                dependenciesNode.ReplaceContenOrAddStartsWith(kotlinPrefix, kotlinPrefix + kotlinVersion);
+                dependenciesNode.ReplaceContenOrAddStartsWith(kotlinPrefix, kotlinPrefix + kotlinVersion + "'");
                 Debug.Log("<UniWebView> Updated Kotlin dependency in build.gradle.");
             }
 
             // Add browser package
             if (settings.addsAndroidBrowser) {
-                dependenciesNode.ReplaceContenOrAddStartsWith(browserPrefix, browserPrefix + browserVersion);
+                dependenciesNode.ReplaceContenOrAddStartsWith(browserPrefix, browserPrefix + browserVersion + "'");
                 Debug.Log("<UniWebView> Updated Browser dependency in build.gradle.");
             }
         } else {

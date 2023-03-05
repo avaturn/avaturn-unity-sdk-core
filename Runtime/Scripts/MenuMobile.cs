@@ -1,10 +1,11 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class MenuMobile : MonoBehaviour
 {
     [SerializeField] private bool _isOpen;
-    [SerializeField] private GameObject _hideButton, _controllCanvas;
     [SerializeField] private IframeControllerMobile _iframe;
+    [SerializeField] private UnityEvent _openEvent, _closeEvent;
 
     public void Open()
     {
@@ -24,9 +25,14 @@ public class MenuMobile : MonoBehaviour
     private void DefinedSwitch(bool isOpen)
     {
         _isOpen = isOpen;
-        _hideButton.SetActive(_isOpen);
-        if(_controllCanvas != null)
-            _controllCanvas.SetActive(!_isOpen);
         _iframe.ShowView(_isOpen);
+        if (isOpen)
+        {
+            _openEvent?.Invoke();
+        }
+        else
+        {
+            _closeEvent?.Invoke();
+        }
     }
 }

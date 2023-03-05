@@ -2,6 +2,9 @@ using System.Xml;
 using System.Collections;
 using System.Text;
 using System.IO;
+using System;
+using UnityEditor;
+using UnityEngine;
 
 internal class UniWebViewAndroidXmlDocument : XmlDocument {
     private string path;
@@ -138,5 +141,74 @@ internal class UniWebViewAndroidManifest : UniWebViewAndroidXmlDocument {
             changed = true;
         }
         return changed;
+    }
+
+    internal bool AddAuthCallbacksIntentFilter(string[] authCallbackUrls) {
+        bool changed = false;
+        XmlElement authActivityNode;
+        if (authCallbackUrls.Length > 0) {
+            var list = SelectNodes("/manifest/application/activity[@android:name='com.onevcat.uniwebview.UniWebViewAuthenticationActivity']", nameSpaceManager);
+            if (list.Count == 0) {
+                var created = CreateElement("activity");
+                created.SetAttribute("name", AndroidXmlNamespace, "com.onevcat.uniwebview.UniWebViewAuthenticationActivity");
+                created.SetAttribute("exported", AndroidXmlNamespace, "true");
+                created.SetAttribute("launchMode", AndroidXmlNamespace, "singleTop");
+                created.SetAttribute("configChanges", AndroidXmlNamespace, "orientation|screenSize|keyboardHidden");
+                authActivityNode = created;
+            } else {
+                authActivityNode = list[0] as XmlElement;
+            }
+        } else {
+            return changed;
+        }
+
+        foreach (var url in authCallbackUrls) {
+            var intentFilter = CreateIntentFilter(url);
+            if (intentFilter != null) {
+                authActivityNode.AppendChild(intentFilter);
+                changed = true;
+            }
+        }
+        ApplicationElement.AppendChild(authActivityNode);
+        return changed;
+    }
+
+    private XmlElement CreateIntentFilter(string url) {
+        
+        var uri = new Uri(url);
+        var scheme = uri.Scheme;
+        if (String.IsNullOrEmpty(scheme)) {
+            Debug.LogError("<UniWebView> Auth callback url contains an empty scheme. Please check the url: " + url);
+            return null;
+        }
+
+        var filter = CreateElement("intent-filter");
+        
+        var action = CreateElement("action");
+        action.SetAttribute("name", AndroidXmlNamespace, "android.intent.action.VIEW");
+        filter.AppendChild(action);
+        
+        var defaultCategory = CreateElement("category");
+        defaultCategory.SetAttribute("name", AndroidXmlNamespace, "android.intent.category.DEFAULT");
+        filter.AppendChild(defaultCategory);
+        
+        var browseCategory = CreateElement("category");
+        browseCategory.SetAttribute("name", AndroidXmlNamespace, "android.intent.category.BROWSABLE");
+        filter.AppendChild(browseCategory);
+        
+        var data = CreateElement("data");
+        data.SetAttribute("scheme", AndroidXmlNamespace, scheme);
+        if (!String.IsNullOrEmpty(uri.Host)) {
+            data.SetAttribute("host", AndroidXmlNamespace, uri.Host);
+        }
+        if (uri.Port != -1) {
+            data.SetAttribute("port", AndroidXmlNamespace, uri.Port.ToString());
+        }
+        if (!String.IsNullOrEmpty(uri.PathAndQuery) && uri.PathAndQuery != "/") {
+            data.SetAttribute("path", AndroidXmlNamespace, uri.PathAndQuery);
+        }
+        
+        filter.AppendChild(data);
+        return filter;
     }
 }

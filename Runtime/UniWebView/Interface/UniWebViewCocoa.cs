@@ -302,6 +302,13 @@ public class UniWebViewInterface {
         CheckPlatform();
         uv_setJavaScriptEnabled(flag);
     }
+    
+    [DllImport(DllLib)]
+    private static extern void uv_setLimitsNavigationsToAppBoundDomains(bool flag);
+    public static void SetLimitsNavigationsToAppBoundDomains(bool flag) {
+        CheckPlatform();
+        uv_setLimitsNavigationsToAppBoundDomains(flag);
+    }
 
     [DllImport(DllLib)]
     private static extern void uv_cleanCache(string name);
@@ -388,6 +395,27 @@ public class UniWebViewInterface {
     }
 
     [DllImport(DllLib)]
+    private static extern void uv_setAllowUserDismissSpinnerByGesture(string name, bool flag);
+    public static void SetAllowUserDismissSpinnerByGesture(string name, bool flag) {
+        CheckPlatform();
+        uv_setAllowUserDismissSpinnerByGesture(name, flag);
+    }
+
+    [DllImport(DllLib)]
+    private static extern void uv_showSpinner(string name);
+    public static void ShowSpinner(string name) {
+        CheckPlatform();
+        uv_showSpinner(name);
+    }
+
+    [DllImport(DllLib)]
+    private static extern void uv_hideSpinner(string name);
+    public static void HideSpinner(string name) {
+        CheckPlatform();
+        uv_hideSpinner(name);
+    }
+
+    [DllImport(DllLib)]
     private static extern bool uv_canGoBack(string name);
     public static bool CanGoBack(string name) {
         CheckPlatform();
@@ -451,59 +479,10 @@ public class UniWebViewInterface {
     }
 
     [DllImport(DllLib)]
-    private static extern void uv_setShowToolbar(string name, bool show, bool animated, bool onTop, bool adjustInset);
-    public static void SetShowToolbar(string name, bool show, bool animated, bool onTop, bool adjustInset) {
-        CheckPlatform();
-        uv_setShowToolbar(name, show, animated, onTop, adjustInset);
-    }
-
-    [DllImport(DllLib)]
-    private static extern void uv_setShowToolbarNavigationButtons(string name, bool show);
-    public static void SetShowToolbarNavigationButtons(string name, bool show) {
-        CheckPlatform();
-        uv_setShowToolbarNavigationButtons(name, show);
-    }
-
-    [DllImport(DllLib)]
-    private static extern void uv_setToolbarDoneButtonText(string name, string text);
-    public static void SetToolbarDoneButtonText(string name, string text) {
-        CheckPlatform();
-        uv_setToolbarDoneButtonText(name, text);
-    }
-
-    [DllImport(DllLib)]
-    private static extern void uv_setGoBackButtonText(string name, string text);
-    public static void SetToolbarGoBackButtonText(string name, string text) { 
-        CheckPlatform(); 
-        uv_setGoBackButtonText(name, text);
-    }
-
-    [DllImport(DllLib)]
-    private static extern void uv_setGoForwardButtonText(string name, string text);
-    public static void SetToolbarGoForwardButtonText(string name, string text) { 
-        CheckPlatform();
-        uv_setGoForwardButtonText(name, text);
-    }
-
-    [DllImport(DllLib)]
     private static extern void uv_setWindowUserResizeEnabled(string name, bool enabled);
     public static void SetWindowUserResizeEnabled(string name, bool enabled) {
         CheckPlatform();
         uv_setWindowUserResizeEnabled(name, enabled);
-    }
-
-    [DllImport(DllLib)]
-    private static extern void uv_setToolbarTintColor(string name, float r, float g, float b);
-    public static void SetToolbarTintColor(string name, float r, float g, float b) {
-        CheckPlatform();
-        uv_setToolbarTintColor(name, r, g, b);
-    }
-
-    [DllImport(DllLib)]
-    private static extern void uv_setToolbarTextColor(string name, float r, float g, float b);
-    public static void SetToolbarTextColor(string name, float r, float g, float b) {
-        CheckPlatform();
-        uv_setToolbarTextColor(name, r, g, b);
     }
 
     [DllImport(DllLib)]
@@ -675,6 +654,158 @@ public class UniWebViewInterface {
         CheckPlatform();
         uv_safeBrowsingDismiss(name);
     }
+
+    [DllImport(DllLib)]
+    private static extern bool uv_authenticationIsSupported();
+    public static bool IsAuthenticationIsSupported() {
+        CheckPlatform();
+        return uv_authenticationIsSupported();
+    }
+
+    [DllImport(DllLib)]
+    private static extern void uv_authenticationInit(string name, string url, string scheme);
+    public static void AuthenticationInit(string name, string url, string scheme) {
+        CheckPlatform();
+        uv_authenticationInit(name, url, scheme);
+    }
+
+    [DllImport(DllLib)]
+    private static extern void uv_authenticationStart(string name);
+    public static void AuthenticationStart(string name) {
+        CheckPlatform();
+        uv_authenticationStart(name);
+    }
+
+    [DllImport(DllLib)]
+    private static extern void uv_authenticationSetPrivateMode(string name, bool flag);
+    public static void AuthenticationSetPrivateMode(string name, bool flag) {
+        CheckPlatform();
+        uv_authenticationSetPrivateMode(name, flag);
+    }
+    
+    [DllImport(DllLib)]
+    private static extern void uv_setShowEmbeddedToolbar(string name, bool show);
+    public static void SetShowEmbeddedToolbar(string name, bool show) {
+        CheckPlatform();
+        uv_setShowEmbeddedToolbar(name, show);
+    }
+    
+    [DllImport(DllLib)]
+    private static extern void uv_setEmbeddedToolbarOnTop(string name, bool top);
+    public static void SetEmbeddedToolbarOnTop(string name, bool top) {
+        CheckPlatform();
+        uv_setEmbeddedToolbarOnTop(name, top);
+    }
+    
+    [DllImport(DllLib)]
+    private static extern void uv_setEmbeddedToolbarDoneButtonText(string name, string text);
+    public static void SetEmbeddedToolbarDoneButtonText(string name, string text) {
+        CheckPlatform();
+        uv_setEmbeddedToolbarDoneButtonText(name, text);
+    }
+    
+    [DllImport(DllLib)]
+    private static extern void uv_setEmbeddedToolbarGoBackButtonText(string name, string text);
+    public static void SetEmbeddedToolbarGoBackButtonText(string name, string text) {
+        CheckPlatform();
+        uv_setEmbeddedToolbarGoBackButtonText(name, text);
+    }
+    
+    [DllImport(DllLib)]
+    private static extern void uv_setEmbeddedToolbarGoForwardButtonText(string name, string text);
+    public static void SetEmbeddedToolbarGoForwardButtonText(string name, string text) {
+        CheckPlatform();
+        uv_setEmbeddedToolbarGoForwardButtonText(name, text);
+    }
+    
+    [DllImport(DllLib)]
+    private static extern void uv_setEmbeddedToolbarTitleText(string name, string text);
+    public static void SetEmbeddedToolbarTitleText(string name, string text) {
+        CheckPlatform();
+        uv_setEmbeddedToolbarTitleText(name, text);
+    }
+    
+    [DllImport(DllLib)]
+    private static extern void uv_setEmbeddedToolbarBackgroundColor(string name, float r, float g, float b, float a);
+    public static void SetEmbeddedToolbarBackgroundColor(string name, Color color) {
+        CheckPlatform();
+        uv_setEmbeddedToolbarBackgroundColor(name, color.r, color.g, color.b, color.a);
+    }
+    
+    [DllImport(DllLib)]
+    private static extern void uv_setEmbeddedToolbarButtonTextColor(string name, float r, float g, float b, float a);
+    public static void SetEmbeddedToolbarButtonTextColor(string name, Color color) {
+        CheckPlatform();
+        uv_setEmbeddedToolbarButtonTextColor(name, color.r, color.g, color.b, color.a);
+    }
+    
+    [DllImport(DllLib)]
+    private static extern void uv_setEmbeddedToolbarTitleTextColor(string name, float r, float g, float b, float a);
+    public static void SetEmbeddedToolbarTitleTextColor(string name, Color color) {
+        CheckPlatform();
+        uv_setEmbeddedToolbarTitleTextColor(name, color.r, color.g, color.b, color.a);
+    }
+    
+    [DllImport(DllLib)]
+    private static extern void uv_setEmbeddedToolbarNavigationButtonsShow(string name, bool show);
+    public static void SetEmeddedToolbarNavigationButtonsShow(string name, bool show) {
+        CheckPlatform();
+        uv_setEmbeddedToolbarNavigationButtonsShow(name, show);
+    }
+
+    #region Deprecated
+    
+    [DllImport(DllLib)]
+    private static extern void uv_setShowToolbar(string name, bool show, bool animated, bool onTop, bool adjustInset);
+    public static void SetShowToolbar(string name, bool show, bool animated, bool onTop, bool adjustInset) {
+        CheckPlatform();
+        uv_setShowToolbar(name, show, animated, onTop, adjustInset);
+    }
+
+    [DllImport(DllLib)]
+    private static extern void uv_setShowToolbarNavigationButtons(string name, bool show);
+    public static void SetShowToolbarNavigationButtons(string name, bool show) {
+        CheckPlatform();
+        uv_setShowToolbarNavigationButtons(name, show);
+    }
+
+    [DllImport(DllLib)]
+    private static extern void uv_setToolbarDoneButtonText(string name, string text);
+    public static void SetToolbarDoneButtonText(string name, string text) {
+        CheckPlatform();
+        uv_setToolbarDoneButtonText(name, text);
+    }
+
+    [DllImport(DllLib)]
+    private static extern void uv_setGoBackButtonText(string name, string text);
+    public static void SetToolbarGoBackButtonText(string name, string text) { 
+        CheckPlatform(); 
+        uv_setGoBackButtonText(name, text);
+    }
+
+    [DllImport(DllLib)]
+    private static extern void uv_setGoForwardButtonText(string name, string text);
+    public static void SetToolbarGoForwardButtonText(string name, string text) { 
+        CheckPlatform();
+        uv_setGoForwardButtonText(name, text);
+    }
+    
+    
+    [DllImport(DllLib)]
+    private static extern void uv_setToolbarTintColor(string name, float r, float g, float b);
+    public static void SetToolbarTintColor(string name, float r, float g, float b) {
+        CheckPlatform();
+        uv_setToolbarTintColor(name, r, g, b);
+    }
+
+    [DllImport(DllLib)]
+    private static extern void uv_setToolbarTextColor(string name, float r, float g, float b);
+    public static void SetToolbarTextColor(string name, float r, float g, float b) {
+        CheckPlatform();
+        uv_setToolbarTextColor(name, r, g, b);
+    }
+    
+    #endregion
 
     public static void CheckPlatform() {
         if (!correctPlatform) {

@@ -36,6 +36,7 @@ public class UniWebViewInterface {
     public static void SetAllowFileAccessFromFileURLs(string name, bool flag) { CheckPlatform(); }
     public static void SetAllowUniversalAccessFromFileURLs(bool flag) { CheckPlatform(); }
     public static void SetJavaScriptEnabled(bool flag) { CheckPlatform(); }
+    public static void SetLimitsNavigationsToAppBoundDomains(bool enabled) { CheckPlatform(); }
     public static void CleanCache(string name) { CheckPlatform(); }
     public static void ClearCookies() { CheckPlatform(); }
     public static void SetCookie(string url, string cookie, bool skipEncoding) { CheckPlatform(); }
@@ -48,6 +49,9 @@ public class UniWebViewInterface {
     public static float GetWebViewAlpha(string name) { CheckPlatform(); return 0.0f; }
     public static void SetShowSpinnerWhileLoading(string name, bool show) { CheckPlatform(); }
     public static void SetSpinnerText(string name, string text) { CheckPlatform(); }
+    public static void SetAllowUserDismissSpinnerByGesture(string name, bool flag) { CheckPlatform(); }
+    public static void ShowSpinner(string name) { CheckPlatform(); }
+    public static void HideSpinner(string name) { CheckPlatform(); }
     public static bool CanGoBack(string name) { CheckPlatform(); return false; }
     public static bool CanGoForward(string name) { CheckPlatform(); return false; }
     public static void GoBack(string name) { CheckPlatform(); }
@@ -78,6 +82,20 @@ public class UniWebViewInterface {
     public static void SafeBrowsingInit(string name, string url) { CheckPlatform(); }
     public static void SafeBrowsingSetToolbarColor(string name, float r, float g, float b) { CheckPlatform(); }
     public static void SafeBrowsingShow(string name) { CheckPlatform(); }
+    public static bool IsAuthenticationIsSupported() { CheckPlatform(); return false; }
+    public static void AuthenticationInit(string name, string url, string scheme) { CheckPlatform(); }
+    public static void AuthenticationStart(string name) { CheckPlatform(); }
+    public static void AuthenticationSetPrivateMode(string name, bool enabled) { CheckPlatform(); }
+    public static void SetShowEmbeddedToolbar(string name, bool show) { CheckPlatform(); }
+    public static void SetEmbeddedToolbarOnTop(string name, bool top) { CheckPlatform(); }
+    public static void SetEmbeddedToolbarDoneButtonText(string name, string text) { CheckPlatform(); }
+    public static void SetEmbeddedToolbarGoBackButtonText(string name, string text) { CheckPlatform(); }
+    public static void SetEmbeddedToolbarGoForwardButtonText(string name, string text) { CheckPlatform(); }
+    public static void SetEmbeddedToolbarTitleText(string name, string text) { CheckPlatform(); }
+    public static void SetEmbeddedToolbarBackgroundColor(string name, Color color) { CheckPlatform(); }
+    public static void SetEmbeddedToolbarButtonTextColor(string name, Color color) { CheckPlatform(); }
+    public static void SetEmbeddedToolbarTitleTextColor(string name, Color color) { CheckPlatform(); }
+    public static void SetEmeddedToolbarNavigationButtonsShow(string name, bool show) { CheckPlatform(); }
 
     public static void CheckPlatform() {
         if (!alreadyLoggedWarning) {
