@@ -2,9 +2,6 @@
   "name": "com.avaturn.core",
   "displayName": "AvaturnCore",
   "version": "0.1.2",
-  "dependencies": {
-    "com.avaturn.gltfast": "5.0.1"
-  },
   "author": "Avaturn",
   "description": "Avaturn Core package."
 }
