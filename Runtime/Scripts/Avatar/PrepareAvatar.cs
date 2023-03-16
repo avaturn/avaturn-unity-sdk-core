@@ -1,28 +1,33 @@
 using System.Threading.Tasks;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor;
 
 [RequireComponent(typeof(Animator))]
 public class PrepareAvatar : MonoBehaviour
 {
     //Receives a downloaded model and converts it into mecanim avatar.
 
+    [SerializeField] private Animator _animator;
     [SerializeField] private DownloadAvatarEvents events;
     [Tooltip("Clear root gameObject out of prev avatar gameObjects. Start from that child index")]
     [SerializeField] private int _clearRootFromIndex;
+    [Tooltip("If you didn't save your avatar asset and didn't appoint it to the Animator, use this")]
     [SerializeField] private bool _prepareOnStart;
-
-    private Animator _animator;
     
     private void Start()
     {
         events.OnSuccess += PrepareModel;
-        _animator = GetComponent<Animator>();
-
+        
         if (_prepareOnStart)
         {
             _animator.avatar = HumanoidAvatarBuilder.Build(gameObject);
         }
+    }
+    
+    public void SetAnimator()
+    {
+        _animator = GetComponent<Animator>();
     }
 
 
@@ -63,6 +68,10 @@ public class PrepareAvatar : MonoBehaviour
         _animator.avatar = HumanoidAvatarBuilder.Build(gameObject);
     }
 
+    public void SaveAvatar(string path)
+    {
+        _animator.avatar = HumanoidAvatarBuilder.Save(gameObject, path);
+    }
 }
 
 public static class HumanoidAvatarBuilder
@@ -74,7 +83,15 @@ public static class HumanoidAvatarBuilder
         avatar.name = root.name;
         return avatar;
     }
+    
+    public static Avatar Save(GameObject root, string path)
+    {
+        var avatar = Build(root);
+        AssetDatabase.CreateAsset(avatar, path);
+        return AssetDatabase.LoadAssetAtPath<Avatar>(path);
+    }
 }
+
 
 public class AvatarUtils
 {
