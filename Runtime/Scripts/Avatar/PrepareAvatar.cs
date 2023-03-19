@@ -25,15 +25,10 @@ public class PrepareAvatar : MonoBehaviour
         }
     }
     
-    public void SetAnimator()
+    public void SetAnimator(Avatar avatar)
     {
         _animator = GetComponent<Animator>();
-    }
-
-
-    private void PrepareRootModel()
-    {
-        PrepareModel(transform);
+        _animator.avatar = avatar;
     }
 
     private async void PrepareModel(Transform downloadedModel)
@@ -67,11 +62,6 @@ public class PrepareAvatar : MonoBehaviour
         
         _animator.avatar = HumanoidAvatarBuilder.Build(gameObject);
     }
-
-    public void SaveAvatar(string path)
-    {
-        _animator.avatar = HumanoidAvatarBuilder.Save(gameObject, path);
-    }
 }
 
 public static class HumanoidAvatarBuilder
@@ -82,13 +72,6 @@ public static class HumanoidAvatarBuilder
         Avatar avatar = AvatarBuilder.BuildHumanAvatar(root.gameObject, description);
         avatar.name = root.name;
         return avatar;
-    }
-    
-    public static Avatar Save(GameObject root, string path)
-    {
-        var avatar = Build(root);
-        AssetDatabase.CreateAsset(avatar, path);
-        return AssetDatabase.LoadAssetAtPath<Avatar>(path);
     }
 }
 
