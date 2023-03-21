@@ -2,25 +2,28 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Android;
 
-public class RequestCameraPermission : MonoBehaviour
+namespace Avaturn
 {
-    IEnumerator Start()
+    public class RequestCameraPermission : MonoBehaviour
     {
-        if (Application.platform == RuntimePlatform.Android)
+        IEnumerator Start()
         {
-            if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
+            if (Application.platform == RuntimePlatform.Android)
             {
-                Permission.RequestUserPermission(Permission.Camera);
-                yield return new WaitUntil(() => Permission.HasUserAuthorizedPermission(Permission.Camera));
+                if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
+                {
+                    Permission.RequestUserPermission(Permission.Camera);
+                    yield return new WaitUntil(() => Permission.HasUserAuthorizedPermission(Permission.Camera));
+                }
             }
-        }
-        else
-        {
-            yield return Application.RequestUserAuthorization(UserAuthorization.WebCam);
-            if (!Application.HasUserAuthorization(UserAuthorization.WebCam))
-                yield break;
-        }
+            else
+            {
+                yield return Application.RequestUserAuthorization(UserAuthorization.WebCam);
+                if (!Application.HasUserAuthorization(UserAuthorization.WebCam))
+                    yield break;
+            }
         
-        var devices = WebCamTexture.devices;
+            var devices = WebCamTexture.devices;
+        }
     }
 }

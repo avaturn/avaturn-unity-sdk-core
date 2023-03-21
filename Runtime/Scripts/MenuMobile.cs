@@ -1,38 +1,41 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class MenuMobile : MonoBehaviour
+namespace Avaturn
 {
-    [SerializeField] private bool _isOpen;
-    [SerializeField] private IframeControllerMobile _iframe;
-    [SerializeField] private UnityEvent _openEvent, _closeEvent;
-
-    public void Open()
+    public class MenuMobile : MonoBehaviour
     {
-        DefinedSwitch(true);
-    }
+        [SerializeField] private bool _isOpen;
+        [SerializeField] private IframeControllerMobile _iframe;
+        [SerializeField] private UnityEvent _openEvent, _closeEvent;
 
-    public void Close()
-    {
-        DefinedSwitch(false);
-    }
-
-    public void Switch()
-    {
-        DefinedSwitch(!_isOpen);
-    }
-
-    private void DefinedSwitch(bool isOpen)
-    {
-        _isOpen = isOpen;
-        _iframe.ShowView(_isOpen);
-        if (isOpen)
+        public void Open()
         {
-            _openEvent?.Invoke();
+            DefinedSwitch(true);
         }
-        else
+
+        public void Close()
         {
-            _closeEvent?.Invoke();
+            DefinedSwitch(false);
+        }
+
+        public void Switch()
+        {
+            DefinedSwitch(!_isOpen);
+        }
+
+        private void DefinedSwitch(bool isOpen)
+        {
+            _isOpen = isOpen;
+            _iframe.ShowView(_isOpen);
+            if (isOpen)
+            {
+                _openEvent?.Invoke();
+            }
+            else
+            {
+                _closeEvent?.Invoke();
+            }
         }
     }
 }

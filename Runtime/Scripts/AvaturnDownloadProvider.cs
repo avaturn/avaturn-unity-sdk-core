@@ -15,11 +15,10 @@
 
 using System;
 using System.Threading.Tasks;
-
-using UnityEngine;
+using GLTFast.Loading;
 using UnityEngine.Networking;
 
-namespace GLTFast.Loading
+namespace Avaturn
 {
 
     /// <summary>

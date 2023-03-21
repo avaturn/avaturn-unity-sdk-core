@@ -1,26 +1,27 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Android;
 
-public class IframeControllerMobile : MonoBehaviour
+namespace Avaturn
 {
-    private UniWebView webView;
-    [SerializeField] private GameObject webViewGameObject;
-    [SerializeField] private RectTransform webViewFrame;
-    [SerializeField] private AvatarReceiver _avatarReceiver;
-    [SerializeField] string subdomain;
-    [SerializeField] string linkFromAPI = "";
-    
-    void Start()
+    public class IframeControllerMobile : MonoBehaviour
     {
-        string domain, link;
-        if ( linkFromAPI == "") {
-            domain = $"{subdomain}.avaturn.dev";
-            link = $"https://{domain}/iframe";
-        }   else {
-            domain = (new Uri(linkFromAPI)).Host;
-            link = linkFromAPI;
-        }
+        private UniWebView webView;
+        [SerializeField] private GameObject webViewGameObject;
+        [SerializeField] private RectTransform webViewFrame;
+        [SerializeField] private AvatarReceiver _avatarReceiver;
+        [SerializeField] string subdomain;
+        [SerializeField] string linkFromAPI = "";
+    
+        void Start()
+        {
+            string domain, link;
+            if ( linkFromAPI == "") {
+                domain = $"{subdomain}.avaturn.dev";
+                link = $"https://{domain}/iframe";
+            }   else {
+                domain = (new Uri(linkFromAPI)).Host;
+                link = linkFromAPI;
+            }
 
 #if UNITY_IOS || UNITY_ANDROID
         Permission.RequestUserPermission(Permission.Camera);
@@ -41,13 +42,13 @@ public class IframeControllerMobile : MonoBehaviour
         webView.SetUserAgent("Mozilla/5.0 (Linux; Android 12) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5359.128 Mobile Safari/537.36");
         webView.OnPageFinished += WebViewOnOnPageFinished;
 #endif
-    }
+        }
 
-    private void WebViewOnOnPageFinished(UniWebView webview, int statuscode, string url)
-    {
-        //webView.OnPageFinished -= WebViewOnOnPageFinished;
+        private void WebViewOnOnPageFinished(UniWebView webview, int statuscode, string url)
+        {
+            //webView.OnPageFinished -= WebViewOnOnPageFinished;
         
-        string jsCode = @"
+            string jsCode = @"
         var time;
         if (typeof isListnerAttached === 'undefined') {
             window.addEventListener('message', subscribe);
@@ -83,16 +84,17 @@ public class IframeControllerMobile : MonoBehaviour
         }
         ";
         
-        webView.AddJavaScript(jsCode, (payload) => {
-            if (payload.resultCode.Equals("0")) {
-                print("Adding JavaScript Finished without error.");
-            }
-        });
-    }
+            webView.AddJavaScript(jsCode, (payload) => {
+                if (payload.resultCode.Equals("0")) {
+                    print("Adding JavaScript Finished without error.");
+                }
+            });
+        }
 
-    public void ShowView(bool show)
-    {
-        if (show) webView.Show();
-        else webView.Hide();
+        public void ShowView(bool show)
+        {
+            if (show) webView.Show();
+            else webView.Hide();
+        }
     }
 }
