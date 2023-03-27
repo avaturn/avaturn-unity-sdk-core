@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -25,7 +26,12 @@ namespace Avaturn
                 _animator.avatar = HumanoidAvatarBuilder.Build(gameObject);
             }
         }
-    
+
+        private void OnDestroy()
+        {
+            events.OnSuccess -= PrepareModel;
+        }
+
         public void SetAnimator(UnityEngine.Avatar avatar)
         {
             _animator = GetComponent<Animator>();
