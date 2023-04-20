@@ -354,7 +354,7 @@ MonoBehaviour:
   _openButton: {fileID: 6411350832266140289}
   _hideButton: {fileID: 4608349848264378835}
   _isOpen: 0
-  _isLockCursor: 0
+  _isLockCursor: 1
 --- !u!1 &4608349848264378835
 GameObject:
   m_ObjectHideFlags: 0
@@ -566,7 +566,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Hide Avaturn
+  m_Text: Hide Avaturn (press P in cursor-locked mode)
 --- !u!1 &4608349848407214601
 GameObject:
   m_ObjectHideFlags: 0

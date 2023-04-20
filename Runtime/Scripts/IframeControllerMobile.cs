@@ -1,6 +1,15 @@
 ﻿using System;
 using UnityEngine;
 
+#if UNITY_ANDROID
+using UnityEngine.Android;
+#endif
+
+#if UNITY_IOS
+using UnityEngine.iOS;
+#endif
+
+
 namespace Avaturn
 {
     public class IframeControllerMobile : MonoBehaviour
@@ -23,24 +32,29 @@ namespace Avaturn
                 link = linkFromAPI;
             }
 
-#if UNITY_IOS || UNITY_ANDROID
-        Permission.RequestUserPermission(Permission.Camera);
-        Permission.RequestUserPermission(Permission.Microphone);
+#if UNITY_ANDROID
+            Permission.RequestUserPermission(Permission.Camera);
+            Permission.RequestUserPermission(Permission.Microphone);
+#elif UNITY_IOS 
+            Application.RequestUserAuthorization(UserAuthorization.WebCam);
+            Application.RequestUserAuthorization(UserAuthorization.Microphone);
+#endif
 
-        UniWebView.SetAllowAutoPlay(true);
-        UniWebView.SetAllowInlinePlay(true);
-        webView = webViewGameObject.AddComponent<UniWebView>();
-
-        webView.Load(link);
-        webView.ReferenceRectTransform = webViewFrame;
-
-        _avatarReceiver.SetWebView(webView);
-        webView.SetAcceptThirdPartyCookies(true);
-        webView.SetShowToolbar(true);
-        webView.AddPermissionTrustDomain("scan.in3d.io");
-        webView.AddPermissionTrustDomain(domain);
-        webView.SetUserAgent("Mozilla/5.0 (Linux; Android 12) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5359.128 Mobile Safari/537.36");
-        webView.OnPageFinished += WebViewOnOnPageFinished;
+#if UNITY_ANDROID || UNITY_IOS
+            UniWebView.SetAllowAutoPlay(true);
+            UniWebView.SetAllowInlinePlay(true);
+            webView = webViewGameObject.AddComponent<UniWebView>();
+    
+            webView.Load(link);
+            webView.ReferenceRectTransform = webViewFrame;
+    
+            _avatarReceiver.SetWebView(webView);
+            webView.SetAcceptThirdPartyCookies(true);
+            webView.SetShowToolbar(true);
+            webView.AddPermissionTrustDomain("scan.in3d.io");
+            webView.AddPermissionTrustDomain(domain);
+            webView.SetUserAgent("Mozilla/5.0 (Linux; Android 12) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5359.128 Mobile Safari/537.36");
+            webView.OnPageFinished += WebViewOnOnPageFinished;
 #endif
         }
 
