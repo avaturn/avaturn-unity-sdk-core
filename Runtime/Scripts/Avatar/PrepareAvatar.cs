@@ -13,6 +13,7 @@ namespace Avaturn
         [SerializeField] private DownloadAvatarEvents events;
         [Tooltip("Clear root gameObject out of prev avatar gameObjects. Start from that child index")]
         [SerializeField] private int _clearRootFromIndex;
+        [SerializeField] private bool _worldPositionStaysForNewAvatar = true;
         
         private Animator _animator;
 
@@ -59,7 +60,7 @@ namespace Avaturn
             for (int i = 0; i < childCount; i++)
             {
                 var child = root.GetChild(0);
-                child.SetParent(transform);
+                child.SetParent(transform, _worldPositionStaysForNewAvatar);
             }
             _animator.avatar = HumanoidAvatarBuilder.Build(gameObject);
         
