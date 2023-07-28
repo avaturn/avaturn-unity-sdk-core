@@ -2,6 +2,17 @@
 
 using UnityEngine;
 
+class UniWebViewMethodChannel: AndroidJavaProxy
+    {
+        public UniWebViewMethodChannel() : base("com.onevcat.uniwebview.UniWebViewNativeChannel") { }
+
+        string invokeChannelMethod(string name, string method, string parameters) {
+            UniWebViewLogger.Instance.Verbose("invokeChannelMethod invoked by native side. Name: " + name + " Method: " 
+                                          + method + " Params: " + parameters);
+            return UniWebViewChannelMethodManager.Instance.InvokeMethod(name, method, parameters);
+        }
+    }
+
 public class UniWebViewInterface {
     private static readonly AndroidJavaClass plugin;
     private static bool correctPlatform = Application.platform == RuntimePlatform.Android;
@@ -10,8 +21,13 @@ public class UniWebViewInterface {
         var go = new GameObject("UniWebViewAndroidStaticListener");
         go.AddComponent<UniWebViewAndroidStaticListener>();
         plugin = new AndroidJavaClass("com.onevcat.uniwebview.UniWebViewInterface");
+        
         CheckPlatform();
+
         plugin.CallStatic("prepare");
+
+        UniWebViewLogger.Instance.Info("Connecting to native side method channel.");
+        plugin.CallStatic("registerChannel", new UniWebViewMethodChannel());
     }
 
     public static void SetLogLevel(int level) {

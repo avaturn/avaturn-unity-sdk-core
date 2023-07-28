@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -126,11 +127,12 @@ public class UniWebViewAuthenticationFlowLine : UniWebViewAuthenticationCommonFl
     }
 
     private string GenerateReturnUri() {
-        var query = System.Web.HttpUtility.ParseQueryString("");
-        query.Add("response_type", responseType);
-        query.Add("client_id", clientId);
-        query.Add("redirect_uri", RedirectUri);
-        
+        var query = new NameValueCollection {
+            { "response_type", responseType },
+            { "client_id", clientId },
+            { "redirect_uri", RedirectUri }
+        };
+
         // State is a must in LINE Login.
         var state = GenerateAndStoreState();
         query.Add("state", state);
@@ -149,7 +151,7 @@ public class UniWebViewAuthenticationFlowLine : UniWebViewAuthenticationCommonFl
                 query.Add("code_challenge_method", method);
             }
         }
-        return "/oauth2/v2.1/authorize/consent?" + query;
+        return "/oauth2/v2.1/authorize/consent?" + UniWebViewAuthenticationUtils.CreateQueryString(query);
     }
 
     /// <summary>

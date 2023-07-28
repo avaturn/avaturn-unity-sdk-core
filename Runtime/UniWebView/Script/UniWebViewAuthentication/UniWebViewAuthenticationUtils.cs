@@ -17,8 +17,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 using UnityEngine.Networking;
 
 /// <summary>
@@ -171,6 +173,23 @@ public class UniWebViewAuthenticationUtils {
         }
 
         return input;
+    }
+
+    public static string CreateQueryString(NameValueCollection collection) {
+        int count = collection.Count;
+        if (count == 0) {
+            return "";            
+        }
+        StringBuilder sb = new StringBuilder();
+        string [] keys = collection.AllKeys;
+        for (int i = 0; i < count; i++) {
+            sb.AppendFormat ("{0}={1}&", keys[i], UnityWebRequest.EscapeURL(collection[keys[i]]));
+        }
+
+        if (sb.Length > 0) {
+            sb.Length--;            
+        }
+        return sb.ToString();
     }
 }
 

@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -143,11 +144,12 @@ public class UniWebViewAuthenticationFlowFacebook: UniWebViewAuthenticationCommo
 
     private string GetAuthUrl() {
         var builder = new UriBuilder(config.authorizationEndpoint);
-        var query = System.Web.HttpUtility.ParseQueryString("");
+        var query = new NameValueCollection();
         foreach (var kv in GetAuthenticationUriArguments()) {
             query.Add(kv.Key, kv.Value);
         }
-        builder.Query = query.ToString();
+
+        builder.Query = UniWebViewAuthenticationUtils.CreateQueryString(query);
         return builder.ToString();
     }
 

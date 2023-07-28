@@ -1709,8 +1709,42 @@ public class UniWebView: MonoBehaviour {
         #endif
     }
 
+    /// <summary>
+    /// Registers a method handler for deciding whether UniWebView should handle the request received by the web view.
+    ///
+    /// The handler is called before the web view actually starts to load the new request. You can check the request
+    /// properties, such as the URL, to decide whether UniWebView should continue to handle the request or not. If you
+    /// return `true` from the handler function, UniWebView will continue to load the request. Otherwise, UniWebView
+    /// will stop the loading.
+    /// </summary>
+    /// <param name="handler">
+    /// A handler you can implement your own logic against the input request value. You need to return a boolean value
+    /// to indicate whether UniWebView should continue to load the request or not as soon as possible.
+    /// </param>
+    public void RegisterShouldHandleRequest(Func<UniWebViewChannelMethodHandleRequest, bool> handler) {
+        object Func(object obj) => handler((UniWebViewChannelMethodHandleRequest)obj);
+        UniWebViewChannelMethodManager.Instance.RegisterChannelMethod(
+            listener.Name, 
+            UniWebViewChannelMethod.ShouldUniWebViewHandleRequest,
+            Func
+        );
+    }
+    
+    /// <summary>
+    /// Unregisters the method handler for handling request received by the web view.
+    ///
+    /// This clears the handler registered by `RegisterHandlingRequest` method.
+    /// </summary>
+    public void UnregisterShouldHandleRequest() {
+        UniWebViewChannelMethodManager.Instance.UnregisterChannelMethod(
+            listener.Name, 
+            UniWebViewChannelMethod.ShouldUniWebViewHandleRequest
+        );
+    }
+    
     void OnDestroy() {
         UniWebViewNativeListener.RemoveListener(listener.Name);
+        UniWebViewChannelMethodManager.Instance.UnregisterChannel(listener.Name);
         UniWebViewInterface.Destroy(listener.Name);
         Destroy(listener.gameObject);
     }

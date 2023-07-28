@@ -19,6 +19,7 @@ using System;
 using System.Collections;
 using UnityEngine.Networking;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -205,11 +206,11 @@ public class UniWebViewAuthenticationFlow<TTokenType> {
 
     private string GetAuthUrl() {
         var builder = new UriBuilder(service.GetAuthenticationConfiguration().authorizationEndpoint);
-        var query = System.Web.HttpUtility.ParseQueryString("");
+        var query = new NameValueCollection();
         foreach (var kv in service.GetAuthenticationUriArguments()) {
             query.Add(kv.Key, kv.Value);
         }
-        builder.Query = query.ToString();
+        builder.Query = UniWebViewAuthenticationUtils.CreateQueryString(query);
         return builder.ToString();
     }
 

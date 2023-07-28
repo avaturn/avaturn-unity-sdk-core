@@ -1,5 +1,33 @@
 # Release Note
 
+### 5.4.2 (9 Jun, 2023)
+
+#### Fix
+
+* The method `AddDownloadMIMEType` did not work as expected even when the target MIME type is detected. Now it should trigger the download as expected.
+
+### 5.4.1 (17 May, 2023)
+
+#### Fix
+
+* An issue that the web view crashes on some Android devices when there is no loading callback is registered under Release mode. This was a regression introduced in 5.4.0. If you are using 5.4.0 and has this crash, please upgrade to 5.4.1 to get a fix.
+
+### 5.4.0 (13 May, 2023)
+
+#### Add
+
+* A method to control whether a loading should be started or not. Use `RegisterShouldHandleRequest` to register a callback and returns whether the loading should be started or not. Check [its reference](https://docs.uniwebview.com/api/#registershouldhandlerequest) for more.
+
+#### Fix
+
+* Now web view on iOS 16.4 can also be inspected. However, different from previous versions, you need to call `SetWebContentsDebuggingEnabled` to enable the debugging mode before inspecting the web view on all platforms.
+
+### 5.3.2 (5 Apr, 2023)
+
+#### Fix
+
+* Strip using of methods from `System.Web.HttpUtility` internally to resolve a runtime issue in older Unity versions.
+
 ### 5.3.1 (18 Feb, 2023)
 
 #### Fix

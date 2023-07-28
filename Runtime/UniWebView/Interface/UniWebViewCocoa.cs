@@ -25,6 +25,7 @@ using System.Reflection;
 public class UniWebViewInterface {
     static UniWebViewInterface() {
         ConnectMessageSender();
+        RegisterChannel();
     }
 
     delegate void UnitySendMessageDelegate(IntPtr objectName, IntPtr methodName, IntPtr parameter);
@@ -75,7 +76,28 @@ public class UniWebViewInterface {
             }
         }
     }
+    
+    delegate string ChannelMethodDelegate(IntPtr namePtr, IntPtr methodPtr, IntPtr parameterPtr);
+    
+    [DllImport(DllLib)]
+    private static extern void uv_registerChannel([MarshalAs(UnmanagedType.FunctionPtr)] ChannelMethodDelegate channel);
+    public static void RegisterChannel() {
+        UniWebViewLogger.Instance.Info("Connecting to native side method channel.");
+        CheckPlatform();
+        uv_registerChannel(ChannelFunc);
+    }
 
+    [MonoPInvokeCallback(typeof(ChannelMethodDelegate))]
+    private static string ChannelFunc(IntPtr namePtr, IntPtr methodPtr, IntPtr parameterPtr) {
+        string name = Marshal.PtrToStringAuto(namePtr);
+        string method = Marshal.PtrToStringAuto(methodPtr);
+        string parameters = Marshal.PtrToStringAuto(parameterPtr);
+
+        UniWebViewLogger.Instance.Verbose("ChannelFunc invoked by native side. Name: " + name + " Method: " 
+                                          + method + " Params: " + parameters);
+        return UniWebViewChannelMethodManager.Instance.InvokeMethod(name, method, parameters);
+    }
+    
     [DllImport(DllLib)]
     private static extern void uv_setLogLevel(int level);
     public static void SetLogLevel(int level) {
