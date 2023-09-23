@@ -26,10 +26,10 @@ namespace Avaturn
             string domain, link;
             if ( linkFromAPI == "") {
                 domain = $"{subdomain}.avaturn.dev";
-                link = $"https://{domain}/iframe";
+                link = $"https://{domain}?sdk=true";
             }   else {
-                domain = (new Uri(linkFromAPI)).Host;
-                link = linkFromAPI;
+                domain = new Uri(linkFromAPI).Host;
+                link = linkFromAPI + "&sdk=true";
             }
 
 #if UNITY_ANDROID
@@ -51,7 +51,6 @@ namespace Avaturn
             _avatarReceiver.SetWebView(webView);
             webView.SetAcceptThirdPartyCookies(true);
             webView.SetShowToolbar(true);
-            webView.AddPermissionTrustDomain("scan.in3d.io");
             webView.AddPermissionTrustDomain(domain);
             webView.SetUserAgent("Mozilla/5.0 (Linux; Android 12) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5359.128 Mobile Safari/537.36");
             webView.OnPageFinished += WebViewOnOnPageFinished;
@@ -59,45 +58,38 @@ namespace Avaturn
         }
 
         private void WebViewOnOnPageFinished(UniWebView webview, int statuscode, string url)
-        {
-            //webView.OnPageFinished -= WebViewOnOnPageFinished;
-        
+        {     
             string jsCode = @"
-        var time;
-        if (typeof isListnerAttached === 'undefined') {
-            window.addEventListener('message', subscribe);
-            isListnerAttached = true;
+function loadAvaturn() {
+  
+  // Required overrides for mobile
+  window.avaturnForceExportHttpUrl = true;
+  window.avaturnFirebaseUseSignInWithRedirect = true;
 
-            // Required overrides for mobile
-            window.avaturnForceExportHttpUrl = true;
-            window.avaturnFirebaseUseSignInWithRedirect = true;
-        }
+  // Init SDK and callback
+  window.avaturnSDKEnvironment = JSON.stringify({ engine: 'Unity', version: '__VERSION__', platform: '__PLATFORM__' });
+  window.avaturnSDK.init(null, {})
+    .then(() => window.avaturnSDK.on('export',
+      (data) => {
+        const params = new URLSearchParams();
 
-        function subscribe(event) {
-            const json = parse(event);
-            if (json?.source !== 'avaturn' || json?.eventName == null) {
-                return;
-            }
-            if (json.eventName === 'v2.avatar.exported') {
-                let url = json.data.url;
+        ['avatarId', 'avatarSupportsFaceAnimations', 'bodyId', 'gender', 'sessionId', 'url', 'urlType'].forEach( (p) => {
+          params.append(p, data[p] || '');
+        })
+          
+        location.href = 'uniwebview://action?' + params.toString();
+      })
+    );
+}
 
-                if (json.data.urlType !== 'httpURL') { 
-                    url = 'error://urlType is not httpURL';
-                }
-            
-                location.href = 'uniwebview://action?avatar_link=' + encodeURIComponent(url);
-            }
-
-            function parse(event) {
-                try {
-                    return JSON.parse(event.data);
-                } catch (error) {
-                    return null;
-                }
-            }
-        }
-        ";
-        
+// Start Avaturn on page load 
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadAvaturn);
+} else {
+  loadAvaturn();
+}";
+            jsCode = jsCode.Replace("__VERSION__", Application.unityVersion);
+            jsCode = jsCode.Replace("__PLATFORM__", GetPlatformString());
             webView.AddJavaScript(jsCode, (payload) => {
                 if (payload.resultCode.Equals("0")) {
                     print("Adding JavaScript Finished without error.");
@@ -110,5 +102,27 @@ namespace Avaturn
             if (show) webView.Show();
             else webView.Hide();
         }
+        private string GetPlatformString()
+        {
+            #if UNITY_EDITOR
+                return "editor";
+            #elif UNITY_IOS
+                return "ios";
+            #elif UNITY_ANDROID
+                return "android";
+            #elif UNITY_WEBGL
+                return "webgl";
+            #elif UNITY_STANDALONE_WIN
+                return "windows";
+            #elif UNITY_STANDALONE_OSX
+                return "mac";
+            #elif UNITY_STANDALONE_LINUX
+                return "linux";
+            #else
+                return "unknown";
+            #endif
+        }
     }
+    
+    
 }

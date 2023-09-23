@@ -21,11 +21,12 @@ namespace Avaturn
         private void Start()
         {
             if(_downloadOnStart)
-                Download(_startUrl);
+                Download(new AvatarReceivedEventArgs(_startUrl, "", "", "", ""));
         }
 
-        public async void Download(string url)
-        {
+        public async void Download(AvatarReceivedEventArgs args)
+        {   
+            string url = args.url;
             if (string.IsNullOrEmpty(url))
             {
                 Debug.LogError("Fail to download: url is empty");

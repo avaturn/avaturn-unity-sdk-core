@@ -7,9 +7,7 @@ namespace Avaturn
     public class AvatarReceiver : MonoBehaviour
     {
         [Serializable]
-        class OnReceived : UnityEvent<string>
-        {
-        }
+        class OnReceived : UnityEvent<AvatarReceivedEventArgs> { }
 
         [SerializeField] private OnReceived received;
 
@@ -26,24 +24,13 @@ namespace Avaturn
         /// </summary>
         private void ReceiveLinkAsUniwebViewMessage(UniWebView webview, UniWebViewMessage message)
         {
-            string parameterKey = "avatar_link";
-            var split = message.RawMessage.Split(new string[] {$"{parameterKey}="}, System.StringSplitOptions.None);
-            if (split.Length != 2)
-            {
-                Debug.Log($"Argument {parameterKey} is empty");
-                return;
-            }
+            string url = Uri.UnescapeDataString(message.Args["url"]);
+            string urlType = Uri.UnescapeDataString(message.Args["urlType"]);
+            string bodyId = Uri.UnescapeDataString(message.Args["bodyId"]);
+            string gender = Uri.UnescapeDataString(message.Args["gender"]);
+            string avatarId = Uri.UnescapeDataString(message.Args["avatarId"]);
 
-            var url = split[1];
-            url = System.Uri.UnescapeDataString(url);
-
-            if (url.StartsWith("error://"))
-            {
-                Debug.Log($"Error when receiving data from Avaturn: {url.Substring(8)}");
-                return;
-            }
-
-            received?.Invoke(url);
+            received?.Invoke(new AvatarReceivedEventArgs(url, urlType, bodyId, gender, avatarId));
         }
 
         /// <summary>
@@ -51,7 +38,25 @@ namespace Avaturn
         /// </summary>
         public void ReceiveAvatarLink(string url)
         {
-            received?.Invoke(url);
+            received?.Invoke(new AvatarReceivedEventArgs(url, "", "", "", ""));
+        }
+    }
+    public class AvatarReceivedEventArgs
+    {
+        public string url;
+        public string urlType;
+        public string bodyId;
+        public string gender;
+        public string avatarId;
+
+
+        public AvatarReceivedEventArgs(string url, string urlType, string bodyId, string gender, string avatarId)
+        {
+            this.url = url;
+            this.urlType = urlType;
+            this.bodyId = bodyId;
+            this.gender = gender;
+            this.avatarId = avatarId;
         }
     }
 }
